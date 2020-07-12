@@ -2,3 +2,6 @@ webpack 'source' -o 'outpath'
 
 npm start -- 需要在package.json中增加scripts的配置
 npm run server
+
+extract-text-webpack-clean webpack 4 不支持，因此需要安装beta版
+npm install --save-dev extract-text-webpack-plugin@next

@@ -1,14 +1,14 @@
 const webpack = require("webpack");
 const htmlWebpackPlugin = require("html-webpack-plugin");
 const extractTextWebPackPlugin = require("extract-text-webpack-plugin");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const {CleanWebpackPlugin} = require("clean-webpack-plugin");
 
 module.exports = {
     // devtool: 'eval-source-map',
     entry: __dirname + "/app/main.js",
     output: {
         path: __dirname + "/public",
-        filename: "bundle.js"
+        filename: "bundle-[hash].js"
     },
     devServer: {
         contentBase: './public',//本地服务器所加载的页面所在的目录
@@ -26,17 +26,10 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                use: [
-                    {loader: "style-loader"},
-                    {
-                        loader: "css-loader",
-                        options: {
-                            modules: {
-                                localIdentName: '[name]__[local]--[hash:base64:5]'//css的类名
-                            }
-                        }
-                    }
-                ],
+                use: extractTextWebPackPlugin.extract({
+                    fallback: "style-loader",
+                    use: "css-loader"
+                }),
                 exclude: /node_modules/
             }
         ]
@@ -47,7 +40,7 @@ module.exports = {
             template: __dirname + "/app/index.tmpl.html"
         }),
         new webpack.optimize.OccurrenceOrderPlugin(),
-        new extractTextWebPackPlugin("style.css"),
+        new extractTextWebPackPlugin("[name]-[hash].css"),
         new CleanWebpackPlugin()
     ]
 }
